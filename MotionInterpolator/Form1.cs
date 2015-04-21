@@ -12,6 +12,11 @@ namespace MotionInterpolator
 {
     public partial class MainForm : Form
     {
+
+        string videoFileName;
+
+        FrameInterpolator frameInterpolator;
+
         public MainForm()
         {
             InitializeComponent();
@@ -41,7 +46,17 @@ namespace MotionInterpolator
 
                     if ((fileStream = videoOpenFileDialog.OpenFile()) != null)
                     {
-                        MessageBox.Show("File Selected", "Error Title", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        setVideoFileName(videoOpenFileDialog.FileName);
+                        frameInterpolator = new FrameInterpolator(getVideoFileName());
+
+                        frameInterpolator.loadReader();
+
+                        videoInfoTextBox.Text = "Height: " + frameInterpolator.getVideoHeight() + Environment.NewLine;
+                        videoInfoTextBox.Text += "Width: " + frameInterpolator.getVideoWidth() + Environment.NewLine;
+                        videoInfoTextBox.Text += "Frame Rate: " + frameInterpolator.getVideoFrameRate() + Environment.NewLine;
+                        videoInfoTextBox.Text += "Codec: " + frameInterpolator.getVideoCodec() + Environment.NewLine;
+
+
                     }
                 }
                 catch (Exception exception)
@@ -52,5 +67,36 @@ namespace MotionInterpolator
 
 
         }
+
+        private void processVideoButton_Click(object sender, EventArgs e)
+        {
+
+            if (!String.IsNullOrEmpty(getVideoFileName()))
+            {
+
+
+
+                
+
+            }
+            else
+            {
+                MessageBox.Show("Error: A valid file was not selected!");
+            }
+
+            
+        }
+
+
+        public string getVideoFileName()
+        {
+            return videoFileName;
+        }
+
+        public void setVideoFileName(string name)
+        {
+            videoFileName = name;
+        }
+
     }
 }
