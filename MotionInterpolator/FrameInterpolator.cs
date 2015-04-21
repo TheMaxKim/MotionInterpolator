@@ -18,6 +18,8 @@ namespace MotionInterpolator
         private VideoFileReader videoReader;
         private VideoFileWriter videoWriter;
 
+        MainForm sender;
+
         public FrameInterpolator()
         {
 
@@ -65,6 +67,11 @@ namespace MotionInterpolator
 
         public int getVideoFrameRate() {
             return videoReader.FrameRate;
+        }
+
+        public void setSender(MainForm form)
+        {
+            sender = form;
         }
 
         public void interpolateFrames()
@@ -150,7 +157,7 @@ namespace MotionInterpolator
                     }
                 }
 
-                Console.WriteLine(i);
+                sender.updateCurrentFrameDisplay(i, (int)videoReader.FrameCount);
 
                 currentFrame = nextFrame;
 

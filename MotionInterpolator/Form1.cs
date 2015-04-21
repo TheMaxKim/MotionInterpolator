@@ -72,9 +72,10 @@ namespace MotionInterpolator
 
             if (!String.IsNullOrEmpty(getVideoFileName()))
             {
-
+                videoInfoTextBox.Text = "Processing...";
+                frameInterpolator.setSender(this);
                 frameInterpolator.interpolateFrames();
-
+                videoInfoTextBox.Text = "Done!";
             }
             else
             {
@@ -103,6 +104,13 @@ namespace MotionInterpolator
         private void label1_Click_1(object sender, EventArgs e)
         {
 
+        }
+
+        public void updateCurrentFrameDisplay(int currentFrame, int totalFrames)
+        {
+            videoInfoTextBox.Text = "Processing..." + Environment.NewLine;
+            videoInfoTextBox.Text += "Processing Frame " + currentFrame + " of " + totalFrames;
+            Refresh();
         }
 
     }
