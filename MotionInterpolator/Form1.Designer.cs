@@ -33,18 +33,25 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.processVideoButton = new System.Windows.Forms.Button();
             this.videoInfoTextBox = new System.Windows.Forms.TextBox();
-            this.frameRateTextBox = new System.Windows.Forms.TextBox();
+            this.targetFrameRateTextBox = new System.Windows.Forms.TextBox();
+            this.targetFrameRateTextBoxLabel = new System.Windows.Forms.Label();
+            this.outputNameTextBoxLabel = new System.Windows.Forms.Label();
+            this.outputNameTextBox = new System.Windows.Forms.TextBox();
             this.formButtonTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // formButtonTableLayoutPanel
             // 
-            this.formButtonTableLayoutPanel.ColumnCount = 2;
+            this.formButtonTableLayoutPanel.ColumnCount = 3;
             this.formButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.formButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.formButtonTableLayoutPanel.Controls.Add(this.openFileButton, 1, 0);
-            this.formButtonTableLayoutPanel.Controls.Add(this.processVideoButton, 1, 1);
-            this.formButtonTableLayoutPanel.Controls.Add(this.frameRateTextBox, 0, 0);
+            this.formButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 356F));
+            this.formButtonTableLayoutPanel.Controls.Add(this.openFileButton, 2, 0);
+            this.formButtonTableLayoutPanel.Controls.Add(this.processVideoButton, 2, 1);
+            this.formButtonTableLayoutPanel.Controls.Add(this.targetFrameRateTextBox, 1, 0);
+            this.formButtonTableLayoutPanel.Controls.Add(this.targetFrameRateTextBoxLabel, 0, 0);
+            this.formButtonTableLayoutPanel.Controls.Add(this.outputNameTextBoxLabel, 0, 1);
+            this.formButtonTableLayoutPanel.Controls.Add(this.outputNameTextBox, 1, 1);
             this.formButtonTableLayoutPanel.Location = new System.Drawing.Point(61, 442);
             this.formButtonTableLayoutPanel.Name = "formButtonTableLayoutPanel";
             this.formButtonTableLayoutPanel.RowCount = 2;
@@ -56,7 +63,7 @@
             // 
             // openFileButton
             // 
-            this.openFileButton.Location = new System.Drawing.Point(236, 3);
+            this.openFileButton.Location = new System.Drawing.Point(113, 3);
             this.openFileButton.Name = "openFileButton";
             this.openFileButton.Size = new System.Drawing.Size(75, 23);
             this.openFileButton.TabIndex = 0;
@@ -70,7 +77,7 @@
             // 
             // processVideoButton
             // 
-            this.processVideoButton.Location = new System.Drawing.Point(236, 53);
+            this.processVideoButton.Location = new System.Drawing.Point(113, 53);
             this.processVideoButton.Name = "processVideoButton";
             this.processVideoButton.Size = new System.Drawing.Size(98, 24);
             this.processVideoButton.TabIndex = 1;
@@ -87,12 +94,39 @@
             this.videoInfoTextBox.Size = new System.Drawing.Size(466, 200);
             this.videoInfoTextBox.TabIndex = 1;
             // 
-            // frameRateTextBox
+            // targetFrameRateTextBox
             // 
-            this.frameRateTextBox.Location = new System.Drawing.Point(3, 3);
-            this.frameRateTextBox.Name = "frameRateTextBox";
-            this.frameRateTextBox.Size = new System.Drawing.Size(31, 20);
-            this.frameRateTextBox.TabIndex = 2;
+            this.targetFrameRateTextBox.Location = new System.Drawing.Point(58, 3);
+            this.targetFrameRateTextBox.Name = "targetFrameRateTextBox";
+            this.targetFrameRateTextBox.Size = new System.Drawing.Size(49, 20);
+            this.targetFrameRateTextBox.TabIndex = 2;
+            // 
+            // targetFrameRateTextBoxLabel
+            // 
+            this.targetFrameRateTextBoxLabel.AutoSize = true;
+            this.targetFrameRateTextBoxLabel.Location = new System.Drawing.Point(3, 0);
+            this.targetFrameRateTextBoxLabel.Name = "targetFrameRateTextBoxLabel";
+            this.targetFrameRateTextBoxLabel.Size = new System.Drawing.Size(41, 26);
+            this.targetFrameRateTextBoxLabel.TabIndex = 3;
+            this.targetFrameRateTextBoxLabel.Text = "Target FPS:";
+            this.targetFrameRateTextBoxLabel.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // outputNameTextBoxLabel
+            // 
+            this.outputNameTextBoxLabel.AutoSize = true;
+            this.outputNameTextBoxLabel.Location = new System.Drawing.Point(3, 50);
+            this.outputNameTextBoxLabel.Name = "outputNameTextBoxLabel";
+            this.outputNameTextBoxLabel.Size = new System.Drawing.Size(42, 26);
+            this.outputNameTextBoxLabel.TabIndex = 4;
+            this.outputNameTextBoxLabel.Text = "Output Name:";
+            this.outputNameTextBoxLabel.Click += new System.EventHandler(this.label1_Click_1);
+            // 
+            // outputNameTextBox
+            // 
+            this.outputNameTextBox.Location = new System.Drawing.Point(58, 53);
+            this.outputNameTextBox.Name = "outputNameTextBox";
+            this.outputNameTextBox.Size = new System.Drawing.Size(49, 20);
+            this.outputNameTextBox.TabIndex = 5;
             // 
             // MainForm
             // 
@@ -117,7 +151,10 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button processVideoButton;
         private System.Windows.Forms.TextBox videoInfoTextBox;
-        private System.Windows.Forms.TextBox frameRateTextBox;
+        private System.Windows.Forms.TextBox targetFrameRateTextBox;
+        private System.Windows.Forms.Label targetFrameRateTextBoxLabel;
+        private System.Windows.Forms.Label outputNameTextBoxLabel;
+        private System.Windows.Forms.TextBox outputNameTextBox;
 
     }
 }

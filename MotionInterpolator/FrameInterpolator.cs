@@ -70,7 +70,7 @@ namespace MotionInterpolator
         public void interpolateFrames()
         {
             videoWriter = new VideoFileWriter();
-            videoWriter.Open("test.avi", getVideoWidth(), getVideoHeight(), 120, VideoCodec.MPEG4, 10000);
+            videoWriter.Open("test.avi", getVideoWidth(), getVideoHeight(), 10, VideoCodec.MPEG4, 10000);
 
             Bitmap currentFrame;
             Bitmap nextFrame;
@@ -79,7 +79,7 @@ namespace MotionInterpolator
             currentFrame = videoReader.ReadVideoFrame();
 
             Rectangle rect = new Rectangle(0, 0, getVideoWidth(), getVideoHeight());
-            Console.WriteLine("yo");
+
             Console.WriteLine(videoReader.FrameCount);
 
             foreach (var prop in videoReader.GetType().GetProperties())
@@ -89,6 +89,9 @@ namespace MotionInterpolator
 
             for (int i = 0; i < videoReader.FrameCount - 1; i++)
             {
+
+                interpolatedFrame = new Bitmap(getVideoWidth(), getVideoHeight());
+
                 //Get the current frame's bitmap data
                 /*
                 BitmapData currentFrameBmpData = currentFrame.LockBits(rect, ImageLockMode.ReadOnly, currentFrame.PixelFormat);
@@ -128,17 +131,33 @@ namespace MotionInterpolator
                 */
 
 
+
                 nextFrame = videoReader.ReadVideoFrame();
 
-                Console.WriteLine(currentFrame.PixelFormat);
+
+                for (int x = 0; x < getVideoWidth(); x++)
+                {
+                    for (int y = 0; y < getVideoHeight(); y++)
+                    {
+
+                        Color curFrameColor = currentFrame.GetPixel(x, y);
+
+                        Color nextFrameColor = nextFrame.GetPixel(x, y);
+
+                        Color averageColor = Color.FromArgb((curFrameColor.R + nextFrameColor.R) / 2, (curFrameColor.G + nextFrameColor.G) / 2, (curFrameColor.B + nextFrameColor.B) / 2);
+
+                        interpolatedFrame.SetPixel(x, y, averageColor);
+                    }
+                }
+
                 Console.WriteLine(i);
 
                 currentFrame = nextFrame;
 
                 videoWriter.WriteVideoFrame(currentFrame);
+                videoWriter.WriteVideoFrame(interpolatedFrame);
 
-                nextFrame.Dispose();
-
+                interpolatedFrame.Dispose();
 
             }
             videoWriter.Close();
