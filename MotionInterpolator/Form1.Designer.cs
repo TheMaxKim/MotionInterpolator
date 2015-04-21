@@ -33,6 +33,7 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.processVideoButton = new System.Windows.Forms.Button();
             this.videoInfoTextBox = new System.Windows.Forms.TextBox();
+            this.frameRateTextBox = new System.Windows.Forms.TextBox();
             this.formButtonTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,6 +44,7 @@
             this.formButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.formButtonTableLayoutPanel.Controls.Add(this.openFileButton, 1, 0);
             this.formButtonTableLayoutPanel.Controls.Add(this.processVideoButton, 1, 1);
+            this.formButtonTableLayoutPanel.Controls.Add(this.frameRateTextBox, 0, 0);
             this.formButtonTableLayoutPanel.Location = new System.Drawing.Point(61, 442);
             this.formButtonTableLayoutPanel.Name = "formButtonTableLayoutPanel";
             this.formButtonTableLayoutPanel.RowCount = 2;
@@ -85,6 +87,13 @@
             this.videoInfoTextBox.Size = new System.Drawing.Size(466, 200);
             this.videoInfoTextBox.TabIndex = 1;
             // 
+            // frameRateTextBox
+            // 
+            this.frameRateTextBox.Location = new System.Drawing.Point(3, 3);
+            this.frameRateTextBox.Name = "frameRateTextBox";
+            this.frameRateTextBox.Size = new System.Drawing.Size(31, 20);
+            this.frameRateTextBox.TabIndex = 2;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -95,6 +104,7 @@
             this.Name = "MainForm";
             this.Text = "Video Motion Interpolator";
             this.formButtonTableLayoutPanel.ResumeLayout(false);
+            this.formButtonTableLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -107,6 +117,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button processVideoButton;
         private System.Windows.Forms.TextBox videoInfoTextBox;
+        private System.Windows.Forms.TextBox frameRateTextBox;
 
     }
 }

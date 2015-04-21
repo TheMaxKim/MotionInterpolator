@@ -56,7 +56,6 @@ namespace MotionInterpolator
                         videoInfoTextBox.Text += "Frame Rate: " + frameInterpolator.getVideoFrameRate() + Environment.NewLine;
                         videoInfoTextBox.Text += "Codec: " + frameInterpolator.getVideoCodec() + Environment.NewLine;
 
-
                     }
                 }
                 catch (Exception exception)
@@ -74,9 +73,7 @@ namespace MotionInterpolator
             if (!String.IsNullOrEmpty(getVideoFileName()))
             {
 
-
-
-                
+                frameInterpolator.interpolateFrames();
 
             }
             else

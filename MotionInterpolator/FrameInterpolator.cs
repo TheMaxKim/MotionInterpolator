@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AForge.Video.FFMPEG;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace MotionInterpolator
 {
@@ -64,6 +66,86 @@ namespace MotionInterpolator
         public int getVideoFrameRate() {
             return videoReader.FrameRate;
         }
+
+        public void interpolateFrames()
+        {
+            videoWriter = new VideoFileWriter();
+            videoWriter.Open("test.avi", getVideoWidth(), getVideoHeight(), 120, VideoCodec.MPEG4, 10000);
+
+            Bitmap currentFrame;
+            Bitmap nextFrame;
+            Bitmap interpolatedFrame;
+
+            currentFrame = videoReader.ReadVideoFrame();
+
+            Rectangle rect = new Rectangle(0, 0, getVideoWidth(), getVideoHeight());
+            Console.WriteLine("yo");
+            Console.WriteLine(videoReader.FrameCount);
+
+            foreach (var prop in videoReader.GetType().GetProperties())
+            {
+                Console.WriteLine("{0}={1}", prop.Name, prop.GetValue(videoReader, null));
+            }
+
+            for (int i = 0; i < videoReader.FrameCount - 1; i++)
+            {
+                //Get the current frame's bitmap data
+                /*
+                BitmapData currentFrameBmpData = currentFrame.LockBits(rect, ImageLockMode.ReadOnly, currentFrame.PixelFormat);
+
+                IntPtr currentFramePtr = currentFrameBmpData.Scan0;
+
+                int currentFrameBytes = Math.Abs(currentFrameBmpData.Stride) * currentFrame.Height;
+
+                byte[] currentFrameRGB = new byte[currentFrameBytes];
+
+                System.Runtime.InteropServices.Marshal.Copy(currentFramePtr, currentFrameRGB, 0, currentFrameBytes);
+
+                //Unlock the bitmap data in memory after we're done with it
+                currentFrame.UnlockBits(currentFrameBmpData);
+                */
+
+
+                
+
+                /*
+                //Get the next frame's bitmap data
+                BitmapData nextFrameBmpData = nextFrame.LockBits(rect, ImageLockMode.ReadOnly, nextFrame.PixelFormat);
+
+                IntPtr nextFramePtr = nextFrameBmpData.Scan0;
+
+                int nextFrameBytes = Math.Abs(nextFrameBmpData.Stride) * nextFrame.Height;
+
+                byte[] nextFrameRGB = new byte[nextFrameBytes];
+
+                System.Runtime.InteropServices.Marshal.Copy(nextFramePtr, nextFrameRGB, 0, nextFrameBytes);
+
+                //Unlock the bitmap data
+                nextFrame.UnlockBits(nextFrameBmpData);
+
+
+                //byte[] interpolatedFrameRGB = currentFrameRGB.Zip(nextFrameRGB, (x, y) => (x + y));
+                */
+
+
+                nextFrame = videoReader.ReadVideoFrame();
+
+                Console.WriteLine(currentFrame.PixelFormat);
+                Console.WriteLine(i);
+
+                currentFrame = nextFrame;
+
+                videoWriter.WriteVideoFrame(currentFrame);
+
+                nextFrame.Dispose();
+
+
+            }
+            videoWriter.Close();
+
+        }
+
+
     }
 
 }
