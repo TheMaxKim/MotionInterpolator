@@ -83,7 +83,7 @@ namespace MotionInterpolator
 
                 videoInfoTextBox.Text = "Processing...";
                 frameInterpolator.setSender(this);
-                frameInterpolator.interpolateFrames();
+                frameInterpolator.interpolateFrames(outputNameTextBox.Text);
                 videoInfoTextBox.Text = "Done!";
             }
             else
@@ -109,7 +109,7 @@ namespace MotionInterpolator
         {
             videoInfoTextBox.Text = "Working..." + Environment.NewLine;
             videoInfoTextBox.Text += "Processing Frame " + currentFrame + " of " + totalFrames;
-            videoInfoTextBox.BeginInvoke(new MethodInvoker(() => Refresh()));
+            Refresh();
         }
 
         public void updatePreviewBox(Bitmap picture)
