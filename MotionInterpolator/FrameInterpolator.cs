@@ -185,7 +185,7 @@ namespace MotionInterpolator
                     //interpolatedFrame.Dispose();
 
 
-                    sender.updateCurrentFrameDisplay(i, (int)videoReader.FrameCount * multiplier);  
+                    sender.updateCurrentFrameDisplay(i * 2 - 1, (int)videoReader.FrameCount * multiplier);  
 
                     
 
