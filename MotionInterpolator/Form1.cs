@@ -96,21 +96,26 @@ namespace MotionInterpolator
             videoFileName = name;
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
         public void updateCurrentFrameDisplay(int currentFrame, int totalFrames)
         {
             videoInfoTextBox.Text = "Processing..." + Environment.NewLine;
             videoInfoTextBox.Text += "Processing Frame " + currentFrame + " of " + totalFrames;
             Refresh();
+        }
+
+        public void updatePreviewBox(Bitmap picture)
+        {
+            previewBox.Image = picture;
+        }
+
+        private void frameRateMultiplierTextBoxLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void outputNameTextBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
     }

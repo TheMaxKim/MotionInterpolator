@@ -162,9 +162,14 @@ namespace MotionInterpolator
                 currentFrame = nextFrame;
 
                 videoWriter.WriteVideoFrame(currentFrame);
+
+                sender.updatePreviewBox(currentFrame);
+
                 videoWriter.WriteVideoFrame(interpolatedFrame);
 
-                interpolatedFrame.Dispose();
+                sender.updatePreviewBox(interpolatedFrame);
+
+                //interpolatedFrame.Dispose();
 
             }
             videoWriter.Close();
