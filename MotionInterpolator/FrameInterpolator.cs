@@ -20,6 +20,8 @@ namespace MotionInterpolator
 
         MainForm sender;
 
+        private int multiplier;
+
         public FrameInterpolator()
         {
 
@@ -74,10 +76,22 @@ namespace MotionInterpolator
             sender = form;
         }
 
+        public void setMultiplier(int multiplier)
+        {
+            this.multiplier = multiplier;
+        }
+
+        public int getMultiplier() {
+            return multiplier;
+        }
+
         public void interpolateFrames()
         {
             videoWriter = new VideoFileWriter();
-            videoWriter.Open("test.avi", getVideoWidth(), getVideoHeight(), 10, VideoCodec.MPEG4, 10000);
+
+            int targetFPS = getVideoFrameRate() * getMultiplier();
+
+            videoWriter.Open("test.avi", getVideoWidth(), getVideoHeight(), targetFPS, VideoCodec.MPEG4, 10000);
 
             Bitmap currentFrame;
             Bitmap nextFrame;
@@ -85,96 +99,157 @@ namespace MotionInterpolator
 
             currentFrame = videoReader.ReadVideoFrame();
 
-            Rectangle rect = new Rectangle(0, 0, getVideoWidth(), getVideoHeight());
 
-            Console.WriteLine(videoReader.FrameCount);
+            int width = getVideoWidth();
+            int height = getVideoHeight();
+            Rectangle rect = new Rectangle(0, 0, width, height);
 
-            foreach (var prop in videoReader.GetType().GetProperties())
-            {
-                Console.WriteLine("{0}={1}", prop.Name, prop.GetValue(videoReader, null));
-            }
+            PixelFormat pixelFormat = currentFrame.PixelFormat;
+            
 
             for (int i = 0; i < videoReader.FrameCount - 1; i++)
             {
 
-                interpolatedFrame = new Bitmap(getVideoWidth(), getVideoHeight());
 
-                //Get the current frame's bitmap data
-                /*
-                BitmapData currentFrameBmpData = currentFrame.LockBits(rect, ImageLockMode.ReadOnly, currentFrame.PixelFormat);
-
-                IntPtr currentFramePtr = currentFrameBmpData.Scan0;
-
-                int currentFrameBytes = Math.Abs(currentFrameBmpData.Stride) * currentFrame.Height;
-
-                byte[] currentFrameRGB = new byte[currentFrameBytes];
-
-                System.Runtime.InteropServices.Marshal.Copy(currentFramePtr, currentFrameRGB, 0, currentFrameBytes);
-
-                //Unlock the bitmap data in memory after we're done with it
-                currentFrame.UnlockBits(currentFrameBmpData);
-                */
-
-
-                
-
-                /*
-                //Get the next frame's bitmap data
-                BitmapData nextFrameBmpData = nextFrame.LockBits(rect, ImageLockMode.ReadOnly, nextFrame.PixelFormat);
-
-                IntPtr nextFramePtr = nextFrameBmpData.Scan0;
-
-                int nextFrameBytes = Math.Abs(nextFrameBmpData.Stride) * nextFrame.Height;
-
-                byte[] nextFrameRGB = new byte[nextFrameBytes];
-
-                System.Runtime.InteropServices.Marshal.Copy(nextFramePtr, nextFrameRGB, 0, nextFrameBytes);
-
-                //Unlock the bitmap data
-                nextFrame.UnlockBits(nextFrameBmpData);
-
-
-                //byte[] interpolatedFrameRGB = currentFrameRGB.Zip(nextFrameRGB, (x, y) => (x + y));
-                */
 
 
 
                 nextFrame = videoReader.ReadVideoFrame();
 
-
-                for (int x = 0; x < getVideoWidth(); x++)
+                sender.updatePreviewBox(currentFrame);
+                videoWriter.WriteVideoFrame(currentFrame);
+                
+               
+                unsafe
                 {
-                    for (int y = 0; y < getVideoHeight(); y++)
+                    
+                    BitmapData currentFrameBmpData = currentFrame.LockBits(rect, ImageLockMode.ReadOnly, pixelFormat);
+
+                    byte* currentFrameScan0 = (byte*) currentFrameBmpData.Scan0;
+
+                    BitmapData nextFrameBmpData = nextFrame.LockBits(rect, ImageLockMode.ReadOnly, pixelFormat);
+
+                    byte* nextFrameScan0 = (byte*) nextFrameBmpData.Scan0;
+
+                    
+                    int pixelSize = (pixelFormat == PixelFormat.Format8bppIndexed) ? 1 :
+                    (pixelFormat == PixelFormat.Format24bppRgb) ? 3 : 4;
+
+
+                    int lineSize = pixelSize * currentFrameBmpData.Width;
+
+                    int currentFrameOffset = currentFrameBmpData.Stride - lineSize;
+                    int nextFrameOffset = nextFrameBmpData.Stride - lineSize;
+
+                    
+
+                    byte* currentFramePtr = (byte*)currentFrameBmpData.Scan0;
+                    byte* nextFramePtr = (byte*)nextFrameBmpData.Scan0;
+
+                    for (int frameNumber = 0; frameNumber < multiplier - 1; frameNumber++)
                     {
+                        
+                        interpolatedFrame = new Bitmap(width, height, pixelFormat);
 
-                        Color curFrameColor = currentFrame.GetPixel(x, y);
+                        BitmapData interpolatedFrameBmpData = interpolatedFrame.LockBits(rect, ImageLockMode.ReadWrite, pixelFormat);
 
-                        Color nextFrameColor = nextFrame.GetPixel(x, y);
+                        byte* interpolatedFramePtr = (byte*)interpolatedFrameBmpData.Scan0;
 
-                        Color averageColor = Color.FromArgb((curFrameColor.R + nextFrameColor.R) / 2, (curFrameColor.G + nextFrameColor.G) / 2, (curFrameColor.B + nextFrameColor.B) / 2);
 
-                        interpolatedFrame.SetPixel(x, y, averageColor);
+                        int interpolatedValue;
+
+                        for (int y = 0; y < height; y++) 
+                        {
+                            for (int x = 0; x < lineSize; x++, currentFramePtr++, nextFramePtr++, interpolatedFramePtr++)
+                            {
+                                int currentFrameValue = *currentFramePtr;
+                                int nextFrameValue = *nextFramePtr;
+
+                                int lowerValue = (currentFrameValue > nextFrameValue) ? nextFrameValue : currentFrameValue;
+
+                                int difference = Math.Abs(currentFrameValue - nextFrameValue);
+
+
+                                interpolatedValue = (byte)((difference * ((frameNumber + 1) / multiplier)) + lowerValue);
+                                *interpolatedFramePtr = (interpolatedValue > 255) ? (byte)255 : (byte)interpolatedValue;
+                            }
+                        }
+
+                        currentFramePtr += currentFrameOffset;
+                        nextFramePtr += nextFrameOffset;
+
+
+                        currentFramePtr = (byte*)currentFrameBmpData.Scan0;
+                        nextFramePtr = (byte*)nextFrameBmpData.Scan0;
+
+                        /*
+                        for (int x = 0; x < currentFrameBmpData.Height; ++x)
+                        {
+                            for (int y = 0; y < currentFrameBmpData.Width; ++y)
+                            {
+
+                                
+
+                                byte* currentFrameData = currentFrameScan0 + x * currentFrameBmpData.Stride + y * pixelSize / 8;
+
+                                byte* nextFrameData = nextFrameScan0 + x * nextFrameBmpData.Stride + y * pixelSize / 8;
+
+
+                                
+                                byte* interpolatedFrameData = interpolatedFrameScan0 + x * interpolatedFrameBmpData.Stride + y * pixelSize / 8;
+
+                                *interpolatedFrameData = (byte)((*currentFrameData + *nextFrameData) * ((frameNumber + 1) / multiplier));
+                                
+                                //byte* interpolatedFrameData = (byte*)((*currentFrameData + *nextFrameData) * ((frameNumber + 1) / multiplier));
+
+                                Console.WriteLine("current Frame Data");
+                                Console.WriteLine(*currentFrameData);
+
+                                Console.WriteLine("next frame data");
+                                Console.WriteLine(*nextFrameData);
+
+                                Console.WriteLine("interpolated frame data");
+                                Console.WriteLine(*interpolatedFrameData);
+
+
+                            }
+                        }*/
+
+
+
+
+
+                        interpolatedFrame.UnlockBits(interpolatedFrameBmpData);
+
+
+                        //sender.updatePreviewBox(interpolatedFrame);
+
+
+                        videoWriter.WriteVideoFrame(interpolatedFrame);
+
+                        interpolatedFrame.Dispose();
+
+
+                        //sender.updateCurrentFrameDisplay(i + frameNumber, (int)videoReader.FrameCount * multiplier);  
+                        
                     }
+
+
+                    currentFrame.UnlockBits(currentFrameBmpData);
+                    
+                    nextFrame.UnlockBits(nextFrameBmpData);
+
                 }
-
-                sender.updateCurrentFrameDisplay(i, (int)videoReader.FrameCount);
-
+                
                 currentFrame = nextFrame;
 
-                videoWriter.WriteVideoFrame(currentFrame);
-
-                sender.updatePreviewBox(currentFrame);
-
-                videoWriter.WriteVideoFrame(interpolatedFrame);
-
-                sender.updatePreviewBox(interpolatedFrame);
-
-                //interpolatedFrame.Dispose();
 
             }
             videoWriter.Close();
 
         }
+
+
 
 
     }

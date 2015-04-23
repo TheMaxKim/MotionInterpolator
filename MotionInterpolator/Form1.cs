@@ -50,7 +50,7 @@ namespace MotionInterpolator
                         frameInterpolator = new FrameInterpolator(getVideoFileName());
 
                         frameInterpolator.loadReader();
-
+                        
                         videoInfoTextBox.Text = "Height: " + frameInterpolator.getVideoHeight() + Environment.NewLine;
                         videoInfoTextBox.Text += "Width: " + frameInterpolator.getVideoWidth() + Environment.NewLine;
                         videoInfoTextBox.Text += "Frame Rate: " + frameInterpolator.getVideoFrameRate() + Environment.NewLine;
@@ -72,6 +72,15 @@ namespace MotionInterpolator
 
             if (!String.IsNullOrEmpty(getVideoFileName()))
             {
+                int frameMultiplier = 2;
+
+                if (!String.IsNullOrEmpty(frameRateMultiplierTextBox.Text))
+                {
+                    frameMultiplier = int.Parse(frameRateMultiplierTextBox.Text);
+                }
+
+                frameInterpolator.setMultiplier(frameMultiplier);
+
                 videoInfoTextBox.Text = "Processing...";
                 frameInterpolator.setSender(this);
                 frameInterpolator.interpolateFrames();
@@ -98,13 +107,18 @@ namespace MotionInterpolator
 
         public void updateCurrentFrameDisplay(int currentFrame, int totalFrames)
         {
-            videoInfoTextBox.Text = "Processing..." + Environment.NewLine;
+            videoInfoTextBox.Text = "Working..." + Environment.NewLine;
             videoInfoTextBox.Text += "Processing Frame " + currentFrame + " of " + totalFrames;
-            Refresh();
+            videoInfoTextBox.BeginInvoke(new MethodInvoker(() => Refresh()));
         }
 
         public void updatePreviewBox(Bitmap picture)
         {
+            if (previewBox.Image != null)
+            {
+                previewBox.Image.Dispose();
+            }
+
             previewBox.Image = picture;
         }
 
